@@ -19,12 +19,13 @@ class AppleMenu extends Component {
 
 
     mouseEnter (ev){
-        this.mouseMoveBegin = true;
+        this.mouseMoveBegin = false;
         this.inOut = true;
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
         let iMax = 200;
+        console.time("enter")
         for (let i = 0; i < aImg.length; i++) {
             let d = this.getDistance(aImg[i], target, oEvent);
             d = Math.min(d, iMax);
@@ -42,7 +43,7 @@ class AppleMenu extends Component {
                 aImg[i].style.width = value + "px";
                 aImg[i].style.height = value + "px";
                 t++;
-                if (t <= during && this.inOut) {
+                if (t <= during && this.inOut && !this.mouseMoveBegin) {
                     requestAnimationFrame(step);
                 }
             };
@@ -77,7 +78,7 @@ class AppleMenu extends Component {
         let aImg = target.getElementsByTagName('img');
         for (let i = 0; i < aImg.length; i++) {
             let t = 0;
-            let during = 60;
+            let during =15;
             let step = () => {
                 var value = this.easeOut(t, aImg[i].offsetWidth, this.props.size - aImg[i].offsetWidth, during);
                 aImg[i].style.width = value + "px";
