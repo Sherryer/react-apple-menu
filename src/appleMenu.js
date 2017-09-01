@@ -15,7 +15,6 @@ class AppleMenu extends Component {
         this.mouseOut = this.mouseOut.bind(this);
         this.filterImg = this.filterImg.bind(this);
         this.inOut = true;
-        this.moveFlag = true;
         this.mouseMoveBegin = false;
         this.Changes = [];
         this.maxSize = this.props.size * this.props.zoom + this.props.size;
