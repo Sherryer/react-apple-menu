@@ -13,7 +13,9 @@ npm i react-apple-menu -S
 | props | description | defaultvalue | type |
 | :---: | --- | --- | --- |
 | zoom | pic zoom | 0.5 | number or string |
-| size | pic size | 64 |  number or string |
+| size | pic size | 64 | number or string |
+| stretch | stretch or not |  | boolean |
+| left、top、right、bottom | menu position | bottom | boolean |
 
 
 ### Include the Component

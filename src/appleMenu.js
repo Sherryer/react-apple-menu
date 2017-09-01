@@ -4,7 +4,11 @@ class AppleMenu extends Component {
 
     constructor(...props){
         super(...props);
-        this.getDistance = this.getDistance.bind(this);
+        if( this.props.left || this.props.right ) {
+            this.getDistance = this.getDistanceRow.bind(this);
+        } else {
+            this.getDistance = this.getDistanceColumn.bind(this);
+        }
         this.mouseEnter = this.mouseEnter.bind(this);
         this.easeOut = this.easeOut.bind(this);
         this.mouseMove = this.mouseMove.bind(this);
@@ -13,19 +17,17 @@ class AppleMenu extends Component {
         this.inOut = true;
         this.moveFlag = true;
         this.mouseMoveBegin = false;
-        this.Changes = []
+        this.Changes = [];
+        this.maxSize = this.props.size * this.props.zoom + this.props.size;
     }
 
-
-
-    mouseEnter (ev){
+    mouseEnter (ev) {
         this.mouseMoveBegin = false;
         this.inOut = true;
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
         let iMax = 200;
-        console.time("enter")
         for (let i = 0; i < aImg.length; i++) {
             let d = this.getDistance(aImg[i], target, oEvent);
             d = Math.min(d, iMax);
@@ -33,10 +35,11 @@ class AppleMenu extends Component {
             this.Changes[i] = changeNum;
 
             let t = 0;
-            let during = 15;
+            let during = 10;
             let step = () => {
                 let value = this.easeOut(t, this.props.size , changeNum , during);
-                if(value - this.props.size  >= this.Changes[i]){
+                if(value - this.props.size > this.Changes[i]){
+
                     this.mouseMoveBegin = true;
                     return
                 }
@@ -63,7 +66,7 @@ class AppleMenu extends Component {
             d = this.getDistance(aImg[i], target, oEvent);
             d = Math.min(d, iMax);
             this.Changes[i] = ((iMax - d) / iMax) * this.props.size * this.props.zoom;
-            if(this.mouseMoveBegin){
+            if( this.mouseMoveBegin ) {
                 aImg[i].style.width =  this.Changes[i] + this.props.size+'px';
                 aImg[i].style.height = this.Changes[i] + this.props.size+'px';
             }
@@ -71,7 +74,7 @@ class AppleMenu extends Component {
         }
     };
 
-    mouseOut (){
+    mouseOut () {
         this.inOut = false;
         this.mouseMoveBegin = false;
         let target = this.refs.target;
@@ -86,7 +89,7 @@ class AppleMenu extends Component {
                 t++;
                 if (t <= during && !this.inOut) {
                     requestAnimationFrame(step);
-                }else{
+                } else {
 
                 }
             };
@@ -95,8 +98,12 @@ class AppleMenu extends Component {
 
     }
 
-    getDistance(img, target, oEvent) {
+    getDistanceColumn (img, target, oEvent) {
         return Math.abs(img.offsetLeft + target.offsetLeft - oEvent.clientX + img.offsetWidth / 2)
+    }
+
+    getDistanceRow (img, target, oEvent) {
+        return Math.abs(img.offsetTop + target.offsetTop - oEvent.clientY + img.offsetHeight / 2)
     }
 
     easeOut (t, b, c, d) {
@@ -116,17 +123,51 @@ class AppleMenu extends Component {
     }
 
     render () {
+        let position = "bottom";
+        let order = "flex-end";
+        let flexDirection = "row";
+        let width = "100%";
+        let height;
+        let justifyContent = "center";
+        if (this.props.top) {
+            position = "top";
+            order = "flex-start";
+            flexDirection = "row";
+            let width = "100%"
+        } else if (this.props.left) {
+            position = "left";
+            order = "flex-start";
+            flexDirection = "column";
+            width = this.maxSize + 10 + "px";
+            height = "100%"
+        } else if (this.props.right) {
+            position = "right";
+            order = "flex-end";
+            flexDirection = "column";
+            width = this.maxSize + 10 + "px";
+            height = "100%"
+        }
+
+
+        if ( this.props.stretch ) {
+            justifyContent = "space-around"
+        }
+
         let body = {
             position: "absolute",
-            bottom: 0,
             display: "flex",
-            justifyContent:"center",
-            width:"100%"
+            justifyContent: justifyContent,
+            width: width,
+            flexDirection: flexDirection,
+            height: height
         };
+
+        body[position] = 0;
+
         let img = {
             width: this.props.size+"px",
             height: this.props.size+"px",
-            alignSelf: "flex-end"
+            alignSelf: order
         };
 
         return (
