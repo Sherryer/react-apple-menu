@@ -1,9 +1,13 @@
 {
   "name": "react-apple-menu",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "react apple menu | dock",
   "keywords": ["react", "apple", "dock", "menu"],
   "main": "./lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sherryer/react-apple-menu"
+  },
   "scripts": {
     "build": "babel src --out-dir lib"
   },
