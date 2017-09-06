@@ -17,7 +17,18 @@ class AppleMenu extends Component {
         this.inOut = true;
         this.mouseMoveBegin = false;
         this.Changes = [];
-        this.maxSize = this.props.size * this.props.zoom + this.props.size;
+        this.size = Math.abs((this.props.size)) || 64;
+        this.zoom = Math.abs(Number(this.props.zoom)) || 0.5;
+        this.iMax = Math.floor(this.size * 3.125);
+        this.maxSize = this.size * this.zoom + this.size;
+        console.log("constructor")
+    }
+
+    componentWillUpdate (nextProps){
+        this.size = Math.abs((nextProps.size)) || 64;
+        this.zoom = Math.abs(Number(nextProps.zoom)) || 0.5;
+        this.iMax = Math.floor(this.size * 3.125);
+        this.maxSize = this.size * this.zoom + this.size;
     }
 
     mouseEnter (ev) {
@@ -26,19 +37,18 @@ class AppleMenu extends Component {
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
-        let iMax = 200;
+
         for (let i = 0; i < aImg.length; i++) {
             let d = this.getDistance(aImg[i], target, oEvent);
-            d = Math.min(d, iMax);
-            let changeNum = ((iMax - d) / iMax) * this.props.size * this.props.zoom;
+            d = Math.min(d, this.iMax);
+            let changeNum = ((this.iMax - d) / this.iMax) * this.size * this.zoom;
             this.Changes[i] = changeNum;
 
             let t = 0;
             let during = 10;
             let step = () => {
-                let value = this.easeOut(t, this.props.size , changeNum , during);
-                if(value - this.props.size > this.Changes[i]){
-
+                let value = this.easeOut(t, this.size , changeNum , during);
+                if(value - this.size > this.Changes[i]){
                     this.mouseMoveBegin = true;
                     return
                 }
@@ -54,20 +64,18 @@ class AppleMenu extends Component {
     }
 
     mouseMove (ev) {
-        // if(!this.state.moveFlag) return;
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
         let d = 0;
-        let iMax = 200;
 
         for (let i = 0; i < aImg.length; i++) {
             d = this.getDistance(aImg[i], target, oEvent);
-            d = Math.min(d, iMax);
-            this.Changes[i] = ((iMax - d) / iMax) * this.props.size * this.props.zoom;
+            d = Math.min(d, this.iMax);
+            this.Changes[i] = ((this.iMax - d) / this.iMax) * this.size * this.zoom;
             if( this.mouseMoveBegin ) {
-                aImg[i].style.width =  this.Changes[i] + this.props.size+'px';
-                aImg[i].style.height = this.Changes[i] + this.props.size+'px';
+                aImg[i].style.width =  this.Changes[i] + this.size+'px';
+                aImg[i].style.height = this.Changes[i] + this.size+'px';
             }
 
         }
@@ -82,7 +90,7 @@ class AppleMenu extends Component {
             let t = 0;
             let during =15;
             let step = () => {
-                var value = this.easeOut(t, aImg[i].offsetWidth, this.props.size - aImg[i].offsetWidth, during);
+                var value = this.easeOut(t, aImg[i].offsetWidth, this.size - aImg[i].offsetWidth, during);
                 aImg[i].style.width = value + "px";
                 aImg[i].style.height = value + "px";
                 t++;
@@ -158,14 +166,16 @@ class AppleMenu extends Component {
             justifyContent: justifyContent,
             width: width,
             flexDirection: flexDirection,
-            height: height
+            height: height,
+
+            border:"1px solid black"
         };
 
         body[position] = 0;
 
         let img = {
-            width: this.props.size+"px",
-            height: this.props.size+"px",
+            width: this.size+"px",
+            height: this.size+"px",
             alignSelf: order
         };
 
