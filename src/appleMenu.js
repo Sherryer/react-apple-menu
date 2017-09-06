@@ -21,10 +21,9 @@ class AppleMenu extends Component {
         this.zoom = Math.abs(Number(this.props.zoom)) || 0.5;
         this.iMax = Math.floor(this.size * 3.125);
         this.maxSize = this.size * this.zoom + this.size;
-        console.log("constructor")
     }
 
-    componentWillUpdate (nextProps){
+    componentWillReceiveProps (nextProps){
         this.size = Math.abs((nextProps.size)) || 64;
         this.zoom = Math.abs(Number(nextProps.zoom)) || 0.5;
         this.iMax = Math.floor(this.size * 3.125);
