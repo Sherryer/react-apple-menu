@@ -166,9 +166,7 @@ class AppleMenu extends Component {
             justifyContent: justifyContent,
             width: width,
             flexDirection: flexDirection,
-            height: height,
-
-            border:"1px solid black"
+            height: height
         };
 
         body[position] = 0;
