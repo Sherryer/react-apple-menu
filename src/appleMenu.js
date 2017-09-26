@@ -44,23 +44,26 @@ class AppleMenu extends Component {
             d = Math.min(d, this.iMax);
             let changeNum = ((this.iMax - d) / this.iMax) * this.size * this.zoom;
 
-            // this.Changes[i] = changeNum;
+            this.Changes[i] = changeNum;
 
             let t = 0;
-            let during = 30;
+            let during = 15;
             let step = () => {
-                let value = this.easeOut(t, this.size , changeNum , during);
-                if(value - this.size > this.Changes[i]){
-                    console.log("done",value - this.size,this.Changes[i]);
-                    // this.mouseMoveBegin = true;
-                    // debugger
+
+                let value = this.easeOut(t, this.size , this.Changes[i] , during);
+                if(value - this.size > changeNum){
+                    this.mouseMoveBegin = true;
                     return
                 }
                 aImg[i].style.width = value + "px";
                 aImg[i].style.height = value + "px";
                 t++;
-                if (t <= during && this.inOut && !this.mouseMoveBegin) {
+                if (t <= during && this.inOut && !this.mouseMoveBegin && changeNum) {
                     requestAnimationFrame(step);
+                } else {
+                    if(++count == length){
+                        this.mouseMoveBegin = true;
+                    }
                 }
             };
             step();
