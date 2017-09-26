@@ -36,19 +36,24 @@ class AppleMenu extends Component {
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
+        let length = aImg.length;
+        let count = 1;
 
-        for (let i = 0; i < aImg.length; i++) {
+        for (let i = 0; i < length; i++) {
             let d = this.getDistance(aImg[i], target, oEvent);
             d = Math.min(d, this.iMax);
             let changeNum = ((this.iMax - d) / this.iMax) * this.size * this.zoom;
-            this.Changes[i] = changeNum;
+
+            // this.Changes[i] = changeNum;
 
             let t = 0;
-            let during = 10;
+            let during = 30;
             let step = () => {
                 let value = this.easeOut(t, this.size , changeNum , during);
                 if(value - this.size > this.Changes[i]){
-                    this.mouseMoveBegin = true;
+                    console.log("done",value - this.size,this.Changes[i]);
+                    // this.mouseMoveBegin = true;
+                    // debugger
                     return
                 }
                 aImg[i].style.width = value + "px";
@@ -60,6 +65,7 @@ class AppleMenu extends Component {
             };
             step();
         }
+
     }
 
     mouseMove (ev) {
@@ -87,9 +93,9 @@ class AppleMenu extends Component {
         let aImg = target.getElementsByTagName('img');
         for (let i = 0; i < aImg.length; i++) {
             let t = 0;
-            let during =15;
+            let during = 15;
             let step = () => {
-                var value = this.easeOut(t, aImg[i].offsetWidth, this.size - aImg[i].offsetWidth, during);
+                var value = this.easeOut(t, aImg[i].width, this.size - aImg[i].width, during);
                 aImg[i].style.width = value + "px";
                 aImg[i].style.height = value + "px";
                 t++;
@@ -120,8 +126,14 @@ class AppleMenu extends Component {
         let src = [];
         let imgs = React.Children.map(this.props.children, (child, index) => {
             if( child.type == "img" ){
+                let {
+                    style,
+                    ...others
+                } = child.props;
+                Object.defineProperties(img, Object.getOwnPropertyDescriptors(style));
+                this.imgPadding = img.padding;
                 return (
-                    <img style={img} {...child.props}/>
+                    <img style={img} {...others}/>
                 )
             }
         });

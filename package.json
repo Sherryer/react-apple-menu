@@ -1,6 +1,6 @@
 {
   "name": "react-apple-menu",
-  "version": "1.2.7",
+  "version": "1.2.9",
   "description": "react apple menu | dock",
   "keywords": ["menu", "react", "dock", "apple", "appledock"],
   "main": "./lib/index.js",
