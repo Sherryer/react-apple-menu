@@ -14,7 +14,8 @@ npm i react-apple-menu -S
 | :---: | --- | --- | --- |
 | zoom | pic zoom | 0.5 | number or string |
 | size | pic size | 64 | number or string |
-| stretch | stretch or not |  | boolean |
+| stretch | stretch or not | false | boolean |
+| dock | open history dock | false | boolean |
 | left、top、right、bottom | menu position | bottom | boolean |
 
 

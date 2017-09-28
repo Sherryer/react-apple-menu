@@ -34,7 +34,6 @@ class AppleMenu extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("willreceiveprops")
         this.size = Math.abs((nextProps.size)) || 64;
         this.zoom = Math.abs(Number(nextProps.zoom)) || 0.5;
         this.iMax = Math.floor(this.size * 3.125);
@@ -44,7 +43,6 @@ class AppleMenu extends Component {
     }
 
     mouseEnter(ev) {
-        console.log("enter")
         this.mouseMoveBegin = false;
         this.inOut = true;
         let oEvent = ev || event;
@@ -84,7 +82,6 @@ class AppleMenu extends Component {
     }
 
     mouseMove(ev) {
-        return
         let oEvent = ev || event;
         let target = this.refs.target;
         let aImg = target.getElementsByTagName('img');
@@ -103,7 +100,6 @@ class AppleMenu extends Component {
     };
 
     mouseOut() {
-        console.log("outer")
         this.inOut = false;
         this.mouseMoveBegin = false;
         let target = this.refs.target;
@@ -126,7 +122,6 @@ class AppleMenu extends Component {
     }
 
     filterImg(img) {
-        // console.log("filterImg")
         let src = [];
         let extendImg = [];
         let imgs = React.Children.map(this.props.children, (child, index) => {
@@ -155,7 +150,8 @@ class AppleMenu extends Component {
             let index = Array.from(target.parentNode.querySelectorAll("img")).indexOf(target);
 
             if (index >= this.imgsLength) {
-                // 点击扩展栏情况
+                return
+                // 点击扩展栏情况 暂不处理
                 // 判断是否需要重新渲染组件
                 if (index - this.imgsLength + 1 === extend.length) {
                     return
@@ -184,7 +180,6 @@ class AppleMenu extends Component {
     }
 
     updateExtandImg() {
-        console.log("extendImg")
         this.setState({extendImg: this.state.extend.map((value) => this.imgs[value])})
     }
 
@@ -240,8 +235,7 @@ class AppleMenu extends Component {
             justifyContent: justifyContent,
             width: width,
             flexDirection: flexDirection,
-            height: height,
-            border: "1px solid black"
+            height: height
         };
 
         body[position] = 0;
@@ -252,13 +246,12 @@ class AppleMenu extends Component {
             alignSelf: order
         };
 
-        // console.log("mainRender");
         return (
-            <div ref="target" onClick={this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
+            <div ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
                  style={body}>
                 {this.filterImgFlag ? this.filterImg(img) : this.imgs}
                 {this.state.extend.length != 0 &&
-                <Line style={{alignSelf: order, height: this.size, width: "30px", margin: this.imgPadding}}/>}
+                <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
                 {this.state.extendImg}
             </div>
         )
@@ -267,7 +260,6 @@ class AppleMenu extends Component {
 
 class Line extends Component {
     render() {
-        // console.log("Line render");
         let style = {
             "background": "#e2e2e2"
         };
