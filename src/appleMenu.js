@@ -128,7 +128,7 @@ class AppleMenu extends Component {
             if (child.type == "img") {
                 let {
                     style,
-                    ...others
+                    ...others,
                 } = child.props;
                 Object.defineProperties(img, Object.getOwnPropertyDescriptors(style));
                 this.imgPadding = img.padding;
@@ -235,7 +235,8 @@ class AppleMenu extends Component {
             justifyContent: justifyContent,
             width: width,
             flexDirection: flexDirection,
-            height: height
+            height: height,
+            border: "1px solid black"
         };
 
         body[position] = 0;
