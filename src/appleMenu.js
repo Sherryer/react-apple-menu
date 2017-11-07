@@ -158,15 +158,17 @@ class AppleMenu extends Component {
                     style,
                     ...others,
                 } = child.props;
-                Object.defineProperties(img, Object.getOwnPropertyDescriptors(style));
+                if(style) {
+                    Object.defineProperties(img, Object.getOwnPropertyDescriptors(style));
+                }
                 this.imgPadding = img.padding;
                 return (
                     <img style={img} {...others}/>
                 )
             }
-        });
+        })||[];
         this.imgs = imgs;
-        this.imgsLength = imgs.length;
+        this.imgsLength = imgs.length ;
         return imgs;
     }
 
@@ -313,7 +315,7 @@ class Line extends Component {
         let style = {
             "background": "#e2e2e2"
         };
-        style = Object.defineProperties(style, Object.getOwnPropertyDescriptors(this.props.style));
+        style = this.props.style?Object.defineProperties(style, Object.getOwnPropertyDescriptors(this.props.style)) : style;
         return (
             <div style={style}></div>
         )
