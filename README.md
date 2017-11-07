@@ -16,6 +16,7 @@ npm i react-apple-menu -S
 | size | pic size | 64 | number or string |
 | stretch | stretch or not | false | boolean |
 | dock | open history dock | false | boolean |
+| portal | open portal at document | true | boolean |
 | left、top、right、bottom | menu position | bottom | boolean |
 
 

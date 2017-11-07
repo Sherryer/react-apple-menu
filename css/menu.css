@@ -1,0 +1,10 @@
+.content img {
+    transition:filter 0.1s ease;
+}
+.content img:active{
+    -webkit-filter: brightness(0.6);
+    filter: brightness(0.6);
+}
+.opacity {
+    opacity:0;
+}

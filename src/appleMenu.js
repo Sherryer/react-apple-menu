@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
+import {createPortal} from 'react-dom';
+import Style from '../css/menu.css'
+
 
 class AppleMenu extends Component {
-
     constructor(...props) {
         super(...props);
         this.state = {
@@ -26,11 +28,17 @@ class AppleMenu extends Component {
         this.inOut = true;
         this.mouseMoveBegin = false;
         this.filterImgFlag = true;
+        this.addFlag = false;
         this.Changes = [];
         this.size = Math.abs((this.props.size)) || 64;
         this.zoom = Math.abs(Number(this.props.zoom)) || 0.5;
         this.iMax = Math.floor(this.size * 3.125);
         this.maxSize = this.size * this.zoom + this.size;
+        if (this.props.portal && createPortal) {
+            const doc = window.document;
+            this.node = doc.createElement('div');
+            doc.body.appendChild(this.node);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,6 +48,26 @@ class AppleMenu extends Component {
         this.maxSize = this.size * this.zoom + this.size;
         this.filterImgFlag = true;
         setTimeout(this.updateExtandImg, 0)
+    }
+
+
+    componentDidUpdate(props, state){
+        if (this.addFlag) {
+            this.addFlag = false;
+            let imgs = this.refs.target.querySelectorAll('img');
+            let lastImg = imgs[imgs.length - 1];
+            let lastImgState = this.state.extendImg[this.state.extendImg.length -1 ];
+            setTimeout(function(){
+                lastImg.style.transition = 'opacity ease 0.2s';
+                lastImg.style.opacity = 1;
+                lastImgState.props.className = lastImgState.props.className.replace(Style.opacity, '');
+            },16);
+            this.mouseMove()
+        }
+    }
+
+    componentWillUnmount() {
+        window.document.body.removeChild(this.node);
     }
 
     mouseEnter(ev) {
@@ -143,6 +171,7 @@ class AppleMenu extends Component {
     }
 
     extendImg(e) {
+        this.addFlag = false;
         this.filterImgFlag = false;
         if (e.target.tagName === "IMG") {
             let extend = this.state.extend;
@@ -167,8 +196,11 @@ class AppleMenu extends Component {
                 // 点击的图片 与 扩展栏中图片重复
                 if (extend.indexOf(index) != -1) {
                     extend.splice(extend.indexOf(index), 1)
+                } else {
+                    if (extend.length <3 ) {
+                        this.addFlag = true
+                    }
                 }
-
                 // 扩展栏最大长度为 3
                 if (extend.length >= 3) {
                     extend.shift()
@@ -180,7 +212,12 @@ class AppleMenu extends Component {
     }
 
     updateExtandImg() {
-        this.setState({extendImg: this.state.extend.map((value) => this.imgs[value])})
+        let updateImg = this.state.extend.map((value) => this.imgs[value]);
+        if (this.addFlag) {
+            let lastImg = updateImg[updateImg.length - 1];
+            lastImg.props.className += ` ${Style.opacity}`;
+        }
+        this.setState({extendImg: updateImg})
     }
 
 
@@ -197,7 +234,7 @@ class AppleMenu extends Component {
     }
 
     render() {
-        // 默认 dock 在底部样式
+        // 默认 menu 在底部样式
         let position = "bottom";
         let order = "flex-end";
         let flexDirection = "row";
@@ -205,7 +242,7 @@ class AppleMenu extends Component {
         let height;
         let justifyContent = "center";
 
-        //根基 dock 不同位置调整样式
+        //根据 menu 不同位置调整样式
         if (this.props.top) {
             position = "top";
             order = "flex-start";
@@ -236,7 +273,6 @@ class AppleMenu extends Component {
             width: width,
             flexDirection: flexDirection,
             height: height,
-            border: "1px solid black"
         };
 
         body[position] = 0;
@@ -247,15 +283,28 @@ class AppleMenu extends Component {
             alignSelf: order
         };
 
-        return (
-            <div ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
-                 style={body}>
-                {this.filterImgFlag ? this.filterImg(img) : this.imgs}
-                {this.state.extend.length != 0 &&
-                <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
-                {this.state.extendImg}
-            </div>
-        )
+        if(this.props.portal && createPortal) {
+            return createPortal (
+                <div className={Style.content} ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
+                     style={body}>
+                    {this.filterImgFlag ? this.filterImg(img) : this.imgs}
+                    {this.state.extend.length != 0 &&
+                    <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
+                    {this.state.extendImg}
+                </div>
+                ,this.node
+            )
+        } else {
+            return (
+                <div className={Style.content} ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
+                     style={body}>
+                    {this.filterImgFlag ? this.filterImg(img) : this.imgs}
+                    {this.state.extend.length != 0 &&
+                    <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
+                    {this.state.extendImg}
+                </div>
+            )
+        }
     }
 }
 
@@ -273,7 +322,8 @@ class Line extends Component {
 
 AppleMenu.defaultProps = {
     size: 64,
-    zoom: 0.5
+    zoom: 0.5,
+    portal: true
 };
 
 export default AppleMenu

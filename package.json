@@ -1,6 +1,6 @@
 {
   "name": "react-apple-menu",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "react apple menu | dock",
   "keywords": [
     "menu",
@@ -27,8 +27,8 @@
     "babel-preset-stage-0": "^6.16.0"
   },
   "dependencies": {
-    "react": "^15.6.0",
-    "react-dom": "^15.6.0"
+    "react": "^16.1.0-beta",
+    "react-dom": "^16.1.0-beta"
   },
   "author": "Sherry",
   "license": "ISC"
