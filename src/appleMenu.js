@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {createPortal} from 'react-dom';
 import Style from '../css/menu.css'
+import Portal from './portal'
 
 
 class AppleMenu extends Component {
@@ -34,11 +34,6 @@ class AppleMenu extends Component {
         this.zoom = Math.abs(Number(this.props.zoom)) || 0.5;
         this.iMax = Math.floor(this.size * 3.125);
         this.maxSize = this.size * this.zoom + this.size;
-        if (this.props.portal && createPortal) {
-            const doc = window.document;
-            this.node = doc.createElement('div');
-            doc.body.appendChild(this.node);
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -64,10 +59,6 @@ class AppleMenu extends Component {
             },16);
             this.mouseMove()
         }
-    }
-
-    componentWillUnmount() {
-        window.document.body.removeChild(this.node);
     }
 
     mouseEnter(ev) {
@@ -285,8 +276,9 @@ class AppleMenu extends Component {
             alignSelf: order
         };
 
-        if(this.props.portal && createPortal) {
-            return createPortal (
+
+        return (
+            <Portal portal={this.props.portal}>
                 <div className={Style.content} ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
                      style={body}>
                     {this.filterImgFlag ? this.filterImg(img) : this.imgs}
@@ -294,19 +286,8 @@ class AppleMenu extends Component {
                     <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
                     {this.state.extendImg}
                 </div>
-                ,this.node
-            )
-        } else {
-            return (
-                <div className={Style.content} ref="target" onClick={this.props.dock&&this.extendImg} onMouseEnter={this.mouseEnter} onMouseMove={this.mouseMove} onMouseLeave={this.mouseOut}
-                     style={body}>
-                    {this.filterImgFlag ? this.filterImg(img) : this.imgs}
-                    {this.state.extend.length != 0 &&
-                    <Line style={{alignSelf: order, height: this.size, width: "1px", margin: this.imgPadding}}/>}
-                    {this.state.extendImg}
-                </div>
-            )
-        }
+            </Portal>
+        )
     }
 }
 
